@@ -1,0 +1,40 @@
+#!/bin/sh
+sd="/dev/mmcblk0"
+p1="/dev/mmcblk0p1"
+p2="/dev/mmcblk0p2"
+umount /dev/mmcblk0p1
+umount /dev/mmcblk0p2
+for i in $sd;do
+echo "o
+n
+p
+1
+
++100M
+t
+c
+n
+p
+2
+
+
+w
+"|fdisk $i;done 
+
+mkfs.vfat $p1
+mkfs.ext4 $p2
+mkdir boot
+mount /dev/mmcblk0p1 boot/
+mkdir root
+mount /dev/mmcblk0p2 root/
+wget http://archlinuxarm.org/os/ArchLinuxARM-rpi-2-latest.tar.gz -P /tmp/
+bsdtar -xvpf /tmp/ArchLinuxARM-rpi-2-latest.tar.gz -C root
+sync
+cp -r root/boot/* boot/
+mkdir -p root/etc/systemd/system/getty@tty1.service.d/
+echo '[Service]' > root/etc/systemd/system/getty@tty1.service.d/override.conf
+echo 'ExecStart=' >> root/etc/systemd/system/getty@tty1.service.d/override.conf
+echo 'ExecStart=-/sbin/agetty --autologin root --noclear %I 38400 linux' >> root/etc/systemd/system/getty@tty1.service.d/override.conf
+umount boot root
+rm -rf boot/ root/
+echo "Insert the SD card into the Raspberry Pi, connect ethernet, and apply 5V power to continue installation."
