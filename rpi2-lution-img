@@ -1,4 +1,15 @@
-#!/bin/sh
+# !/bin/bash
+#
+# rpi2-lution-img (version 0.1 - 22nd March 2015)
+#
+# Written by Scott Sturrock
+# 
+# Builds bootable Arch SD card for rpi2-lution-ais
+#
+# This program is free software, provided under the GNU General Public License
+# as published by the Free Software Foundation. So feel free to copy, distribute,
+# or modify it as you wish.
+#
 
 #automated fdisk hack
 sd="/dev/mmcblk0"
