@@ -1,4 +1,6 @@
 #!/bin/sh
+
+#automated fdisk hack
 sd="/dev/mmcblk0"
 p1="/dev/mmcblk0p1"
 p2="/dev/mmcblk0p2"
@@ -21,6 +23,7 @@ p
 w
 "|fdisk $i;done 
 
+#prepare the sd card and copy files
 mkfs.vfat $p1
 mkfs.ext4 $p2
 mkdir boot
@@ -31,10 +34,23 @@ wget http://archlinuxarm.org/os/ArchLinuxARM-rpi-2-latest.tar.gz -P /tmp/
 bsdtar -xvpf /tmp/ArchLinuxARM-rpi-2-latest.tar.gz -C root
 sync
 cp -r root/boot/* boot/
+
+#enable autologin
 mkdir -p root/etc/systemd/system/getty@tty1.service.d/
 echo '[Service]' > root/etc/systemd/system/getty@tty1.service.d/override.conf
 echo 'ExecStart=' >> root/etc/systemd/system/getty@tty1.service.d/override.conf
 echo 'ExecStart=-/sbin/agetty --autologin root --noclear %I 38400 linux' >> root/etc/systemd/system/getty@tty1.service.d/override.conf
+
+#update system, install necessary packages and run installer automatically
+echo 'pacman -Syu --noconfirm' > root/root/.bash_profile
+echo 'pacman -S git dialog  --noconfirm' >> root/root/.bash_profile
+echo 'git clone https://github.com/ssturrock/rpi2-lution-ais.git' >> root/root/.bash_profile
+echo 'cd rpi2-lution-ais' >> root/root/.bash_profile
+echo 'chmod +x rpi2-lution-ais' >> root/root/.bash_profile
+echo './rpi2-lution-ais' >> root/root/.bash_profile
+
+#remove dirs
 umount boot root
 rm -rf boot/ root/
+
 echo "Insert the SD card into the Raspberry Pi, connect ethernet, and apply 5V power to continue installation."
