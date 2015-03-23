@@ -54,12 +54,13 @@ echo 'ExecStart=-/sbin/agetty --autologin root --noclear %I 38400 linux' >> root
 
 #update system, install necessary packages and run installer automatically
 echo 'while ! ping -c1 www.google.com &>/dev/null; do :; done' > root/root/.bash_profile
-echo 'pacman -Syu --noconfirm' > root/root/.bash_profile
+echo 'pacman -Syu --noconfirm' >> root/root/.bash_profile
 echo 'pacman -S git dialog shadow  --noconfirm' >> root/root/.bash_profile
 echo 'git clone https://github.com/ssturrock/rpi2-lution-ais.git' >> root/root/.bash_profile
 echo 'cd rpi2-lution-ais' >> root/root/.bash_profile
 echo 'chmod +x rpi2-lution-ais' >> root/root/.bash_profile
 echo './rpi2-lution-ais' >> root/root/.bash_profile
+sync
 
 #remove dirs
 umount boot root
