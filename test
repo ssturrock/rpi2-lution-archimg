@@ -1,1 +1,0 @@
-while ! ping -c1 www.google.com &>/dev/null; do :; done
